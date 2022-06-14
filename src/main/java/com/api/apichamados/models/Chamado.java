@@ -8,9 +8,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 @Entity
 @Table(name = "chamado")
 public class Chamado implements Serializable{
@@ -23,15 +27,14 @@ public class Chamado implements Serializable{
 	private String descricao;
 	
 	@Column(nullable = false)
-	private Assunto assunto;
+	private String assunto;
 	
 	@Column(nullable = false)
 	private LocalDate dataRegistro;
 	
 	@Column(nullable = false)
-	private StatusChamado status;
+	private String status;
 	
-	@OneToMany
 	@Column(nullable = false)
-	private Usuario usuario;
+	private String usuarioID;
 }

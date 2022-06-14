@@ -1,18 +1,23 @@
 package com.api.apichamados.dtos;
 
+import javax.validation.constraints.NotBlank;
 
-import com.api.apichamados.models.Assunto;
-import com.api.apichamados.models.StatusChamado;
-import com.api.apichamados.models.Usuario;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 
 public class ChamadoDTO {
+	@NotBlank
 	private String descricao;
 
-	private Assunto assunto;
+	@NotBlank
+	private String assunto;
 	
-
-	private StatusChamado status;
+	@NotBlank
+	private String status;
 	
-	
-	private Usuario usuario;
+	@NotBlank
+	private String usuarioID;
 }
