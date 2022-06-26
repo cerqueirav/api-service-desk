@@ -7,15 +7,12 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class SolicitacaoInput {
+public class SolicitacaoNovaInput {
 	@NotBlank
 	private String descricao;
 	
 	@NotBlank
 	private String assunto;
-	
-	@NotBlank
-	private String status;
 	
 	@NotBlank
 	private String clienteId;

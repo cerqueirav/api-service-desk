@@ -29,5 +29,5 @@ public class ClienteAtualizarInput{
 	
 	private String urlAvatar;
 	
-	private List<SolicitacaoInput> solicitacoes;
+	private List<SolicitacaoNovaInput> solicitacoes;
 }
