@@ -1,2 +1,2 @@
-# api-chamados
-API destinada para gerência de chamados.
+# api-service-desk
+API destinada para um sistema de apoio (Service Desk e Help Desk).
