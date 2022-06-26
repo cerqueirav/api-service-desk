@@ -1,8 +1,13 @@
-package com.api.servicedesk.dtos;
+package com.api.servicedesk.models.input;
 
 import javax.validation.constraints.NotBlank;
 
-public class SolicitacaoDto {
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
+public class SolicitacaoInput {
 	@NotBlank
 	private String descricao;
 	

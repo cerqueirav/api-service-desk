@@ -19,7 +19,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
-import com.api.servicedesk.enums.Sexo;
 import com.api.servicedesk.enums.StatusCliente;
 
 @Data
@@ -37,10 +36,16 @@ public class Cliente implements Serializable {
 	@Column(nullable = false, unique = true, length = 15)
 	private String cpf;
 	
-	@Column(nullable = false, length = 100)
+	@Column(nullable = false, unique = true, length = 100)
 	private String email;
 	
-	@Column(name = "data_nascimento", columnDefinition = "DATE")
+	@Column(nullable = false, unique = true, length = 100)
+	private String login;
+	
+	@Column(nullable = false, length = 100)
+	private String senha;
+	
+	@Column(nullable = false, columnDefinition = "DATE")
 	private LocalDate dataNascimento;
 	
 	@Column(nullable = false, length = 15)
@@ -49,7 +54,7 @@ public class Cliente implements Serializable {
 	@Column(nullable = true,  length = 100)
 	private String urlAvatar;
 	
-	@Column(name = "status", length = 15, nullable = false)
+	@Column(name = "status", length = 15)
 	@Enumerated(EnumType.STRING)
 	private StatusCliente status;
 	

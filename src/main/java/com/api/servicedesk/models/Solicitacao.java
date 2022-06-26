@@ -19,7 +19,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.api.servicedesk.enums.Assunto;
-import com.api.servicedesk.enums.Status;
+import com.api.servicedesk.enums.StatusSolicitacao;
 
 import lombok.Data;
 
@@ -32,7 +32,7 @@ public class Solicitacao implements Serializable{
 	@GeneratedValue (strategy = GenerationType.AUTO)
 	private Long id;
 	
-	@Column(name = "descricao")
+	@Column(name = "descricao", length = 200, nullable = false)
 	private String descricao;
 	
 	@Column(name = "assunto_solicitacao", length = 50, nullable = false)
@@ -41,7 +41,7 @@ public class Solicitacao implements Serializable{
 	
 	@Column(name = "status_solicitacao", length = 50, nullable = false)
 	@Enumerated(EnumType.STRING)
-	private Status status;
+	private StatusSolicitacao status;
 	
 	@CreationTimestamp
 	@Column(name = "data_criacao", columnDefinition = "TIMESTAMP WITH TIME ZONE")

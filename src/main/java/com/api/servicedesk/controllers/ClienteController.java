@@ -1,20 +1,25 @@
 package com.api.servicedesk.controllers;
-import java.time.OffsetDateTime;
 import java.util.List;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.api.servicedesk.assembler.ClienteInputDisassembler;
-import com.api.servicedesk.dtos.ClienteDto;
 import com.api.servicedesk.models.Cliente;
+import com.api.servicedesk.models.input.ClienteAtualizarInput;
+import com.api.servicedesk.models.input.ClienteNovoInput;
 import com.api.servicedesk.services.ClienteService;
 
 @RestController
@@ -22,23 +27,58 @@ import com.api.servicedesk.services.ClienteService;
 @RequestMapping("/clientes")
 public class ClienteController {
 	@Autowired
-	ClienteService clienteService;
-	
-	@Autowired
-	ClienteInputDisassembler clienteInputDisassembler;
-	
-	@PostMapping
-	public ResponseEntity<Object> cadastrar(@RequestBody ClienteDto clienteDto) {
-		var cliente = new Cliente();
-		 
-		 BeanUtils.copyProperties(clienteDto, cliente);
-	
-		 
-		return ResponseEntity.status(HttpStatus.CREATED).body(clienteService.save(cliente));
-	}
+	private ClienteService clienteService;
 	
 	@GetMapping
-	public ResponseEntity<List<Cliente>> getClientes(){
-		return ResponseEntity.status(HttpStatus.OK).body(clienteService.findAll());
+	public ResponseEntity<List<Cliente>> listar(){
+		var clientes = clienteService.listar();
+		
+		if (clientes.isEmpty())
+			ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro desconhecido"); 
+					
+		return ResponseEntity.status(HttpStatus.OK).body(clienteService.listar());
+	}
+	
+	@GetMapping("/{clienteId}")
+	public ResponseEntity<Object> listarPorId(@PathVariable Long clienteId){
+		var cliente = clienteService.buscarOuFalhar(clienteId);
+		
+		if (cliente == null)
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro desconhecido!");
+		
+		return ResponseEntity.status(HttpStatus.OK).body(clienteService.buscarOuFalhar(clienteId));
+	}
+	
+	@PostMapping
+	public ResponseEntity<Object> cadastrar(@RequestBody ClienteNovoInput clienteNovoInput) {
+		var cliente = new Cliente();
+		 
+		BeanUtils.copyProperties(clienteNovoInput, cliente);
+	
+		return ResponseEntity.status(HttpStatus.CREATED).body(clienteService.salvar(cliente));
+	}
+	
+	@PutMapping("/{clienteId}")
+	public ResponseEntity<Object> atualizar(@PathVariable Long clienteId, @RequestBody @Valid ClienteAtualizarInput clienteAtualizarInput) {
+		var clienteAtual = clienteService.buscarOuFalhar(clienteId);
+		
+		if (clienteAtual == null) 
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro desconhecido");
+			
+		clienteAtual = clienteService.atualizar(clienteId, clienteAtualizarInput, clienteAtual);
+		
+		return ResponseEntity.status(HttpStatus.CREATED).body(clienteService.salvar(clienteAtual));
+	}
+	
+	@DeleteMapping("/{clienteId}")
+	public ResponseEntity<Object> deletar(@PathVariable Long clienteId){
+		var cliente = clienteService.buscarOuFalhar(clienteId);
+		
+		if (cliente == null)
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro desconhecido!"); 
+		
+		clienteService.deletar(clienteId);
+		
+		return ResponseEntity.status(HttpStatus.OK).body("Cliente excluido com sucesso!");
 	}
 }

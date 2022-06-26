@@ -1,6 +1,6 @@
 package com.api.servicedesk.enums;
 
-public enum Status {
+public enum StatusSolicitacao {
 	Aberto,
 	Progresso,
 	Atendido

@@ -1,4 +1,4 @@
-package com.api.servicedesk.dtos;
+package com.api.servicedesk.models.input;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -10,13 +10,19 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class ClienteDto {
+public class ClienteNovoInput{
 	@NotBlank
 	private String nome;
 	
 	@NotBlank
 	private String cpf;
 
+	@NotBlank
+	private String login;
+	
+	@NotBlank
+	private String senha;
+	
 	@NotBlank
 	private String email;
 	
@@ -28,7 +34,7 @@ public class ClienteDto {
 	
 	private String urlAvatar;
 	
-	private List<SolicitacaoDto> solicitacoes;
+	private List<SolicitacaoInput> solicitacoes;
 }
 
 
