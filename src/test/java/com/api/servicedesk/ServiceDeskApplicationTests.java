@@ -1,10 +1,10 @@
-package com.api.apichamados;
+package com.api.servicedesk;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ApiChamadosApplicationTests {
+class ServiceDeskApplicationTests {
 
 	@Test
 	void contextLoads() {

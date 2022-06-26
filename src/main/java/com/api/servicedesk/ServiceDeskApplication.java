@@ -1,13 +1,13 @@
-package com.api.apichamados;
+package com.api.servicedesk;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ApiChamadosApplication {
+public class ServiceDeskApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ApiChamadosApplication.class, args);
+		SpringApplication.run(ServiceDeskApplication.class, args);
 	}
 
 }
