@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.api.servicedesk.enums.StatusSolicitacao;
+import com.api.servicedesk.exceptions.ClienteNaoEncontradoException;
 import com.api.servicedesk.models.Solicitacao;
 import com.api.servicedesk.models.input.SolicitacaoAtualizarInput;
 import com.api.servicedesk.repositories.SolicitacaoRepository;
@@ -47,6 +48,14 @@ public class SolicitacaoService {
 	}
 	
 	public void preparaSolicitacaoParaAtualizar(SolicitacaoAtualizarInput solicitacaoAtualizarInput, Solicitacao solicitacao) {
+		if (solicitacaoAtualizarInput.getAssunto() != null)
+			solicitacao.setAssunto(solicitacaoAtualizarInput.getAssunto());
 		
+		if (solicitacaoAtualizarInput.getDescricao() != null)
+			solicitacao.setDescricao(solicitacaoAtualizarInput.getDescricao());
+	}
+	
+	public Solicitacao buscarOuFalhar(Long solicitacaoId) {
+		return solicitacaoRepository.findById(solicitacaoId).orElseThrow(() -> new ClienteNaoEncontradoException(solicitacaoId));
 	}
 }

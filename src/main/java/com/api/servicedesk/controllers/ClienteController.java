@@ -34,7 +34,7 @@ public class ClienteController {
 		var clientes = clienteService.listar();
 		
 		if (clientes.isEmpty())
-			ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro desconhecido"); 
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); 
 					
 		return ResponseEntity.status(HttpStatus.OK).body(clienteService.listar());
 	}

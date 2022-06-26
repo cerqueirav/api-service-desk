@@ -2,11 +2,14 @@ package com.api.servicedesk.models.input;
 import javax.validation.constraints.NotBlank;
 import com.api.servicedesk.enums.Assunto;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class SolicitacaoAtualizarInput {
-	@NotBlank
 	private String descricao;
 	
-	@NotBlank
 	private Assunto assunto;
 	
 	@NotBlank
