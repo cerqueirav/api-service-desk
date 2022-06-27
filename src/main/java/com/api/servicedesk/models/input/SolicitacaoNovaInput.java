@@ -15,5 +15,5 @@ public class SolicitacaoNovaInput {
 	private String assunto;
 	
 	@NotBlank
-	private String clienteId;
+	private Long clienteId;
 }

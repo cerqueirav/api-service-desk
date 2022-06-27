@@ -7,5 +7,5 @@ import com.api.servicedesk.models.Solicitacao;
 
 @Repository
 public interface SolicitacaoRepository extends JpaRepository<Solicitacao, Long>{
-
+	
 }

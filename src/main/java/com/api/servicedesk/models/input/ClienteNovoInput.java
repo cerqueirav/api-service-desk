@@ -1,8 +1,6 @@
 package com.api.servicedesk.models.input;
 
 import java.time.LocalDate;
-import java.util.List;
-
 import javax.validation.constraints.NotBlank;
 
 import lombok.Getter;
@@ -33,8 +31,6 @@ public class ClienteNovoInput{
 	private String sexo;
 	
 	private String urlAvatar;
-	
-	private List<SolicitacaoNovaInput> solicitacoes;
 }
 
 

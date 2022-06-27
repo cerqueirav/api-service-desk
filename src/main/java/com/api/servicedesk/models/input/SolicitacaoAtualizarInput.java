@@ -1,7 +1,5 @@
 package com.api.servicedesk.models.input;
 import javax.validation.constraints.NotBlank;
-import com.api.servicedesk.enums.Assunto;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,7 +8,7 @@ import lombok.Setter;
 public class SolicitacaoAtualizarInput {
 	private String descricao;
 	
-	private Assunto assunto;
+	private String assunto;
 	
 	@NotBlank
 	private Long clienteId;

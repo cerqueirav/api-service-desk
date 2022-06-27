@@ -27,7 +27,7 @@ import com.api.servicedesk.services.ClienteService;
 @RequestMapping("/clientes")
 public class ClienteController {
 	@Autowired
-	private ClienteService clienteService;
+	ClienteService clienteService;
 	
 	@GetMapping
 	public ResponseEntity<List<Cliente>> listar(){
@@ -53,8 +53,10 @@ public class ClienteController {
 	public ResponseEntity<Object> cadastrar(@RequestBody ClienteNovoInput clienteNovoInput) {
 		var cliente = new Cliente();
 		 
+		clienteService.preparaEnumParaCadastro(clienteNovoInput, cliente);
+		
 		BeanUtils.copyProperties(clienteNovoInput, cliente);
-	
+		
 		return ResponseEntity.status(HttpStatus.CREATED).body(clienteService.salvar(cliente));
 	}
 	
@@ -65,7 +67,7 @@ public class ClienteController {
 		if (clienteAtual == null) 
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro desconhecido");
 			
-		clienteAtual = clienteService.atualizar(clienteId, clienteAtualizarInput, clienteAtual);
+		clienteAtual = clienteService.atualizar(clienteAtualizarInput, clienteAtual);
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(clienteService.salvar(clienteAtual));
 	}

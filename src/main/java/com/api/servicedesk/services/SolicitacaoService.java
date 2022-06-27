@@ -4,12 +4,14 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 import javax.transaction.Transactional;
+
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.api.servicedesk.enums.StatusSolicitacao;
 import com.api.servicedesk.exceptions.ClienteNaoEncontradoException;
 import com.api.servicedesk.models.Solicitacao;
 import com.api.servicedesk.models.input.SolicitacaoAtualizarInput;
+import com.api.servicedesk.models.input.SolicitacaoNovaInput;
 import com.api.servicedesk.repositories.SolicitacaoRepository;
 
 @Service
@@ -17,9 +19,19 @@ public class SolicitacaoService {
 	@Autowired
 	private SolicitacaoRepository solicitacaoRepository;
 	
+	@Autowired
+	private ClienteService clienteService;
+	
 	@Transactional
-	public Solicitacao cadastrar(Solicitacao solicitacao) {
+	public Solicitacao salvar(SolicitacaoNovaInput solicitacaoNovaInput) {
+		var cliente = clienteService.buscarOuFalhar(solicitacaoNovaInput.getClienteId());
+		
+		Solicitacao solicitacao = new Solicitacao(cliente, solicitacaoNovaInput.getDescricao(), solicitacaoNovaInput.getAssunto());
+		
+		BeanUtils.copyProperties(solicitacaoNovaInput, solicitacao);
+		
 		preparaSolicitacaoParaSalvar(solicitacao);
+		
 		return solicitacaoRepository.save(solicitacao);
 	}
 	
@@ -43,7 +55,7 @@ public class SolicitacaoService {
 	}
 	
 	public void preparaSolicitacaoParaSalvar(Solicitacao solicitacao) {
-		solicitacao.setStatus(StatusSolicitacao.Aberto);
+		solicitacao.setStatus("Aberto");
 		solicitacao.setDataCriacao(OffsetDateTime.now());
 	}
 	
