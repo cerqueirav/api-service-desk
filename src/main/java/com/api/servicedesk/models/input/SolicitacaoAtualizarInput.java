@@ -1,5 +1,4 @@
 package com.api.servicedesk.models.input;
-import javax.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +9,7 @@ public class SolicitacaoAtualizarInput {
 	
 	private String assunto;
 	
-	@NotBlank
+	private String statusSolicitacao;
+	
 	private Long clienteId;
 }

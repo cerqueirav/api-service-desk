@@ -5,6 +5,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,11 +16,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.api.servicedesk.models.Cliente;
 import com.api.servicedesk.models.input.ClienteAtualizarInput;
 import com.api.servicedesk.models.input.ClienteNovoInput;
+import com.api.servicedesk.models.output.ClienteResumoModel;
 import com.api.servicedesk.services.ClienteService;
 
 @RestController
@@ -39,6 +42,12 @@ public class ClienteController {
 		return ResponseEntity.status(HttpStatus.OK).body(clienteService.listar());
 	}
 	
+	@GetMapping("/page/{pagina}")
+    public Page<ClienteResumoModel> listar(@PathVariable int pagina, @RequestParam(defaultValue = "3", required = false) int qtd) {
+		return clienteService.listar(pagina, qtd);
+    }
+
+	
 	@GetMapping("/{clienteId}")
 	public ResponseEntity<Object> listarPorId(@PathVariable Long clienteId){
 		var cliente = clienteService.buscarOuFalhar(clienteId);
@@ -53,7 +62,7 @@ public class ClienteController {
 	public ResponseEntity<Object> cadastrar(@RequestBody ClienteNovoInput clienteNovoInput) {
 		var cliente = new Cliente();
 		 
-		clienteService.preparaEnumParaCadastro(clienteNovoInput, cliente);
+		clienteService.preparaEnumSexoParaCadastro(clienteNovoInput.getSexo(), cliente);
 		
 		BeanUtils.copyProperties(clienteNovoInput, cliente);
 		

@@ -7,6 +7,10 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.api.servicedesk.enums.Sexo;
@@ -15,7 +19,7 @@ import com.api.servicedesk.exceptions.ClienteNaoEncontradoException;
 import com.api.servicedesk.exceptions.SexoInvalidoException;
 import com.api.servicedesk.models.Cliente;
 import com.api.servicedesk.models.input.ClienteAtualizarInput;
-import com.api.servicedesk.models.input.ClienteNovoInput;
+import com.api.servicedesk.models.output.ClienteResumoModel;
 import com.api.servicedesk.repositories.ClienteRepository;
 
 @Service
@@ -45,14 +49,42 @@ public class ClienteService {
 	public List<Cliente> listar() {
 		return clienteRepository.findAll();
 	}
+
+    public Page<ClienteResumoModel> listar(int pagina, int qtd){
+		Pageable pageable = PageRequest.of(pagina, qtd, Sort.Direction.ASC, "nome");
+        return ClienteResumoModel.converterLista(clienteRepository.findAll(pageable));
+    }
 	
 	public void preparaClienteParaSalvar(Cliente clienteInput) {
 		clienteInput.setStatus(StatusCliente.Ativo);
 		clienteInput.setDataCadastro(OffsetDateTime.now());
 	}
 	
-	public void preparaEnumParaCadastro(ClienteNovoInput clienteNovoInput, Cliente cliente) {
-		var sexo = sexoValido(clienteNovoInput.getSexo());
+	// Refatorar depois ...
+	private void preparaClienteParaAtualizar(ClienteAtualizarInput clienteAtualizarInput, Cliente cliente) {
+		preparaEnumSexoParaCadastro(clienteAtualizarInput.getSexo(), cliente);
+		
+		cliente.setNome(clienteAtualizarInput.getNome());
+		cliente.setCpf(clienteAtualizarInput.getCpf());
+
+		if (clienteAtualizarInput.getLogin() != null)
+			cliente.setLogin(clienteAtualizarInput.getLogin());
+		
+		if (clienteAtualizarInput.getSenha() != null)
+			cliente.setSenha(clienteAtualizarInput.getSenha());
+		
+		if (clienteAtualizarInput.getEmail() != null)
+			cliente.setEmail(clienteAtualizarInput.getEmail());
+		
+		if (clienteAtualizarInput.getDataNascimento() != null)
+			cliente.setDataNascimento(clienteAtualizarInput.getDataNascimento());
+		
+		if (clienteAtualizarInput.getUrlAvatar() != null)
+			cliente.setUrlAvatar(clienteAtualizarInput.getUrlAvatar());	
+	}
+	
+	public void preparaEnumSexoParaCadastro(String sexoAtual, Cliente cliente) {
+		var sexo = sexoValido(sexoAtual);
 		
 		if (sexo == null)
 			throw new SexoInvalidoException();
@@ -68,37 +100,6 @@ public class ClienteService {
 			return Sexo.Feminino;
 		
 		return null;
-	}
-
-	// Refatorar depois ...
-	private void preparaClienteParaAtualizar(ClienteAtualizarInput clienteAtualizarInput, Cliente cliente) {
-		cliente.setNome(clienteAtualizarInput.getNome());
-		cliente.setCpf(clienteAtualizarInput.getCpf());
-		
-		if (clienteAtualizarInput.getLogin() != null)
-			cliente.setLogin(clienteAtualizarInput.getLogin());
-		
-		if (clienteAtualizarInput.getSenha() != null)
-			cliente.setSenha(clienteAtualizarInput.getSenha());
-		
-		if (clienteAtualizarInput.getEmail() != null)
-			cliente.setEmail(clienteAtualizarInput.getEmail());
-		
-		if (clienteAtualizarInput.getDataNascimento() != null)
-			cliente.setDataNascimento(clienteAtualizarInput.getDataNascimento());
-		
-		if (clienteAtualizarInput.getSexo() != null) {
-			var sexo = sexoValido(clienteAtualizarInput.getSexo());
-		
-			if (sexo == null)
-				throw new SexoInvalidoException();
-			
-			cliente.setSexo(sexo);
-		}
-			
-		
-		if (clienteAtualizarInput.getUrlAvatar() != null)
-			cliente.setUrlAvatar(clienteAtualizarInput.getUrlAvatar());	
 	}
 	
 	public Cliente buscarOuFalhar(Long clienteId) {

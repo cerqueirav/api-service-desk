@@ -4,6 +4,8 @@ import java.time.OffsetDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -11,6 +13,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
+
+import com.api.servicedesk.enums.Assunto;
+import com.api.servicedesk.enums.StatusSolicitacao;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -29,11 +34,11 @@ public class Solicitacao{
 	@Column(name = "descricao", length = 200, nullable = false)
 	private String descricao;
 	
-	@Column(name = "assunto", length = 50, nullable = false)
-	private String assunto;
+	@Enumerated(EnumType.STRING)
+	private Assunto assunto;
 	
-	@Column(name = "status", length = 50, nullable = false)
-	private String status;
+	@Enumerated(EnumType.STRING)
+	private StatusSolicitacao status;
 	
 	@ManyToOne
 	private Cliente cliente;
@@ -42,9 +47,8 @@ public class Solicitacao{
 	@Column(name = "data_criacao", columnDefinition = "TIMESTAMP WITH TIME ZONE")
 	private OffsetDateTime dataCriacao;
 
-	public Solicitacao(Cliente cliente, String descricao, String assunto) {
+	public Solicitacao(Cliente cliente, String descricao) {
 		this.descricao = descricao;
-		this.assunto = assunto;
 		this.cliente = cliente;
 	}
 }
