@@ -1,4 +1,5 @@
 package com.api.servicedesk.controllers;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.api.servicedesk.models.Solicitacao;
 import com.api.servicedesk.models.input.SolicitacaoAtualizarInput;
 import com.api.servicedesk.models.input.SolicitacaoNovaInput;
 import com.api.servicedesk.models.output.SolicitacaoResumoModel;
@@ -35,13 +35,18 @@ public class SolicitacaoController {
 	private ClienteService clienteService;
 		
 	@GetMapping
-	public ResponseEntity<List<Solicitacao>> listar(){
+	public ResponseEntity<List<SolicitacaoResumoModel>> listar(){
+		List<SolicitacaoResumoModel> solicitacoesOut = new ArrayList<>();
+		
 		var solicitacoes = solicitacaoService.listar();
 		
-		if (solicitacoes.isEmpty())
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(solicitacoes);
+		for (int i=0; i<solicitacoes.size(); i++) 
+			solicitacoesOut.add(SolicitacaoResumoModel.converterSolicitacao(solicitacoes.get(i)));	
 		
-		return ResponseEntity.status(HttpStatus.OK).body(solicitacoes);
+		if (solicitacoes.isEmpty())
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(solicitacoesOut);
+		
+		return ResponseEntity.status(HttpStatus.OK).body(solicitacoesOut);
 	}
 	
 	@GetMapping("/page/{pagina}")
@@ -61,7 +66,7 @@ public class SolicitacaoController {
 	
 	@PostMapping
 	public ResponseEntity<Object> cadastrar(@RequestBody SolicitacaoNovaInput solicitacaoNovaInput){
-		if(!clienteExistente(solicitacaoNovaInput.getClienteId())) 
+		if(!clienteExistente(solicitacaoNovaInput.getClienteCnpj())) 
 			return ResponseEntity.status(HttpStatus.CONFLICT).body("Erro desconhecido");
 					
 		return ResponseEntity.status(HttpStatus.CREATED).body(solicitacaoService.salvar(solicitacaoNovaInput));
@@ -91,8 +96,8 @@ public class SolicitacaoController {
 		return ResponseEntity.status(HttpStatus.OK).body("Solicitacao excluida com sucesso!");
 	}
 	
-	public boolean clienteExistente(Long clienteId) {
-		var cliente = clienteService.buscarOuFalhar(clienteId);
+	public boolean clienteExistente(String clienteCnpj) {
+		var cliente = clienteService.clienteExistentePorCnpj(clienteCnpj);
 		
 		return (cliente != null) ? true : false;
 	}

@@ -9,11 +9,11 @@ import lombok.Setter;
 @Getter
 public class SolicitacaoNovaInput {
 	@NotBlank
-	private String descricao;
-	
-	@NotBlank
 	private String assunto;
 	
 	@NotBlank
-	private Long clienteId;
+	private String clienteCnpj;
+	
+	@NotBlank
+	private String complemento;
 }

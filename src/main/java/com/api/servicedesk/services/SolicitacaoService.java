@@ -34,9 +34,9 @@ public class SolicitacaoService {
 	
 	@Transactional
 	public Solicitacao salvar(SolicitacaoNovaInput solicitacaoNovaInput) {
-		var cliente = clienteService.buscarOuFalhar(solicitacaoNovaInput.getClienteId());
+		var cliente = clienteService.clienteExistentePorCnpj(solicitacaoNovaInput.getClienteCnpj());
 		
-		Solicitacao solicitacao = new Solicitacao(cliente, solicitacaoNovaInput.getDescricao());
+		Solicitacao solicitacao = new Solicitacao(cliente.get(), solicitacaoNovaInput.getComplemento());
 		
 		BeanUtils.copyProperties(solicitacaoNovaInput, solicitacao);
 		
@@ -76,8 +76,8 @@ public class SolicitacaoService {
 	}
 	
 	public void preparaSolicitacaoParaAtualizar(SolicitacaoAtualizarInput solicitacaoAtualizarInput, Solicitacao solicitacao) {
-		if (solicitacaoAtualizarInput.getDescricao() != null)
-			solicitacao.setDescricao(solicitacaoAtualizarInput.getDescricao());
+		if (solicitacaoAtualizarInput.getComplemento() != null)
+			solicitacao.setComplemento(solicitacaoAtualizarInput.getComplemento());
 		
 		if (solicitacaoAtualizarInput.getAssunto() != null) 
 			preparaEnumAssuntoParaCadastro(solicitacaoAtualizarInput.getAssunto(), solicitacao);

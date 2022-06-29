@@ -31,8 +31,8 @@ public class Solicitacao{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(name = "descricao", length = 200, nullable = false)
-	private String descricao;
+	@Column(name = "complemento", length = 200, nullable = false)
+	private String complemento;
 	
 	@Enumerated(EnumType.STRING)
 	private Assunto assunto;
@@ -47,8 +47,8 @@ public class Solicitacao{
 	@Column(name = "data_criacao", columnDefinition = "TIMESTAMP WITH TIME ZONE")
 	private OffsetDateTime dataCriacao;
 
-	public Solicitacao(Cliente cliente, String descricao) {
-		this.descricao = descricao;
+	public Solicitacao(Cliente cliente, String complemento) {
+		this.complemento = complemento;
 		this.cliente = cliente;
 	}
 }

@@ -1,4 +1,5 @@
 package com.api.servicedesk.controllers;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -33,13 +35,18 @@ public class ClienteController {
 	ClienteService clienteService;
 	
 	@GetMapping
-	public ResponseEntity<List<Cliente>> listar(){
+	public ResponseEntity<List<ClienteResumoModel>> listar(){
+		List<ClienteResumoModel> clientesOut = new ArrayList<>();
+		
 		var clientes = clienteService.listar();
+		
+		for (int i=0; i<clientes.size(); i++) 
+			clientesOut.add(ClienteResumoModel.converterCliente(clientes.get(i)));	
 		
 		if (clientes.isEmpty())
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); 
 					
-		return ResponseEntity.status(HttpStatus.OK).body(clienteService.listar());
+		return ResponseEntity.status(HttpStatus.OK).body(clientesOut);
 	}
 	
 	@GetMapping("/page/{pagina}")
@@ -48,47 +55,45 @@ public class ClienteController {
     }
 
 	
-	@GetMapping("/{clienteId}")
-	public ResponseEntity<Object> listarPorId(@PathVariable Long clienteId){
-		var cliente = clienteService.buscarOuFalhar(clienteId);
+	@GetMapping("/{clienteCnpj}")
+	public ResponseEntity<Object> listarPorCnpj(@PathVariable String clienteCnpj){
+		var cliente = clienteService.clienteExistentePorCnpj(clienteCnpj);
 		
 		if (cliente == null)
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro desconhecido!");
 		
-		return ResponseEntity.status(HttpStatus.OK).body(clienteService.buscarOuFalhar(clienteId));
+		return ResponseEntity.status(HttpStatus.OK).body(cliente.get());
 	}
 	
 	@PostMapping
 	public ResponseEntity<Object> cadastrar(@RequestBody ClienteNovoInput clienteNovoInput) {
 		var cliente = new Cliente();
-		 
-		clienteService.preparaEnumSexoParaCadastro(clienteNovoInput.getSexo(), cliente);
 		
 		BeanUtils.copyProperties(clienteNovoInput, cliente);
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(clienteService.salvar(cliente));
 	}
 	
-	@PutMapping("/{clienteId}")
-	public ResponseEntity<Object> atualizar(@PathVariable Long clienteId, @RequestBody @Valid ClienteAtualizarInput clienteAtualizarInput) {
-		var clienteAtual = clienteService.buscarOuFalhar(clienteId);
+	@PatchMapping("/{clienteCnpj}")
+	public ResponseEntity<Object> atualizar(@PathVariable String clienteCnpj, @RequestBody @Valid ClienteAtualizarInput clienteAtualizarInput) {
+		var clienteAtual = clienteService.clienteExistentePorCnpj(clienteCnpj);
 		
 		if (clienteAtual == null) 
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro desconhecido");
-			
-		clienteAtual = clienteService.atualizar(clienteAtualizarInput, clienteAtual);
 		
-		return ResponseEntity.status(HttpStatus.CREATED).body(clienteService.salvar(clienteAtual));
+		var clienteAtualizado =	clienteService.atualizar(clienteAtualizarInput, clienteAtual.get());
+		
+		return ResponseEntity.status(HttpStatus.CREATED).body(clienteService.salvar(clienteAtualizado));
 	}
 	
-	@DeleteMapping("/{clienteId}")
-	public ResponseEntity<Object> deletar(@PathVariable Long clienteId){
-		var cliente = clienteService.buscarOuFalhar(clienteId);
+	@DeleteMapping("/{clienteCnpj}")
+	public ResponseEntity<Object> deletar(@PathVariable String clienteCnpj){
+		var cliente = clienteService.clienteExistentePorCnpj(clienteCnpj);
 		
 		if (cliente == null)
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro desconhecido!"); 
 		
-		clienteService.deletar(clienteId);
+		clienteService.deletar(cliente.get());
 		
 		return ResponseEntity.status(HttpStatus.OK).body("Cliente excluido com sucesso!");
 	}

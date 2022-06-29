@@ -5,11 +5,11 @@ import lombok.Setter;
 @Setter
 @Getter
 public class SolicitacaoAtualizarInput {
-	private String descricao;
+	private String clienteCnpj;
 	
 	private String assunto;
 	
 	private String statusSolicitacao;
 	
-	private Long clienteId;
+	private String complemento;
 }

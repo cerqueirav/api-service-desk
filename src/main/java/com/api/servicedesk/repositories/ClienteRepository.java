@@ -19,12 +19,12 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long>{
 	Optional<Cliente> findById(Long id);
 	
 	@Transactional(readOnly=true)
-	@Query("SELECT c FROM Cliente c WHERE c.login = :login")
-	Optional<Cliente> findByLogin(String login);
-		
+	@Query("SELECT c FROM Cliente c WHERE c.cnpj = :cnpj")
+	Optional<Cliente> findByCnpj(String cnpj);
+	
 	@Transactional(readOnly=true)
-	@Query("SELECT c FROM Cliente c WHERE c.cpf = :cpf")
-	Optional<Cliente> findByCpf(String cpf);
+	@Query("SELECT c FROM Cliente c WHERE c.endereco = :endereco")
+	Optional<Cliente> findByEndereco(String endereco);
 	
 	public Page<Cliente> findByNome(String nome, Pageable pageable);
 }

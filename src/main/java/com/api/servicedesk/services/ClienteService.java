@@ -13,10 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.api.servicedesk.enums.Sexo;
 import com.api.servicedesk.enums.StatusCliente;
-import com.api.servicedesk.exceptions.ClienteNaoEncontradoException;
-import com.api.servicedesk.exceptions.SexoInvalidoException;
 import com.api.servicedesk.models.Cliente;
 import com.api.servicedesk.models.input.ClienteAtualizarInput;
 import com.api.servicedesk.models.output.ClienteResumoModel;
@@ -46,6 +43,11 @@ public class ClienteService {
 		clienteRepository.deleteById(clienteId);
 	}
 
+	@Transactional
+	public void deletar(Cliente cliente) {
+		clienteRepository.delete(cliente);
+	}
+	
 	public List<Cliente> listar() {
 		return clienteRepository.findAll();
 	}
@@ -62,56 +64,22 @@ public class ClienteService {
 	
 	// Refatorar depois ...
 	private void preparaClienteParaAtualizar(ClienteAtualizarInput clienteAtualizarInput, Cliente cliente) {
-		preparaEnumSexoParaCadastro(clienteAtualizarInput.getSexo(), cliente);
+		if (clienteAtualizarInput.getNome() != null)
+			cliente.setNome(clienteAtualizarInput.getNome());
 		
-		cliente.setNome(clienteAtualizarInput.getNome());
-		cliente.setCpf(clienteAtualizarInput.getCpf());
-
-		if (clienteAtualizarInput.getLogin() != null)
-			cliente.setLogin(clienteAtualizarInput.getLogin());
+		if (clienteAtualizarInput.getCnpj() != null)
+			cliente.setCnpj(clienteAtualizarInput.getCnpj());
 		
-		if (clienteAtualizarInput.getSenha() != null)
-			cliente.setSenha(clienteAtualizarInput.getSenha());
-		
-		if (clienteAtualizarInput.getEmail() != null)
-			cliente.setEmail(clienteAtualizarInput.getEmail());
-		
-		if (clienteAtualizarInput.getDataNascimento() != null)
-			cliente.setDataNascimento(clienteAtualizarInput.getDataNascimento());
-		
-		if (clienteAtualizarInput.getUrlAvatar() != null)
-			cliente.setUrlAvatar(clienteAtualizarInput.getUrlAvatar());	
+		if (clienteAtualizarInput.getEndereco() != null)
+			cliente.setEndereco(clienteAtualizarInput.getEndereco());
 	}
 	
-	public void preparaEnumSexoParaCadastro(String sexoAtual, Cliente cliente) {
-		var sexo = sexoValido(sexoAtual);
+	public Optional<Cliente> clienteExistentePorCnpj(String clienteCnpj) {
+		Optional<Cliente> clienteExistentePorCpnj = clienteRepository.findByCnpj(clienteCnpj);
 		
-		if (sexo == null)
-			throw new SexoInvalidoException();
-		
-		cliente.setSexo(sexo);
-	}
-	
-	public Sexo sexoValido(String sexo) {
-		if (sexo.toUpperCase().equals("MASCULINO")) 
-			return Sexo.Masculino;
-		
-		if (sexo.toUpperCase().equals("FEMININO")) 
-			return Sexo.Feminino;
+		if (clienteExistentePorCpnj.isPresent())
+			return clienteExistentePorCpnj;
 		
 		return null;
-	}
-	
-	public Cliente buscarOuFalhar(Long clienteId) {
-		return clienteRepository.findById(clienteId).orElseThrow(() -> new ClienteNaoEncontradoException(clienteId));
-	}
-	
-	public boolean clienteExistentePorCpf(Cliente cliente) {
-		Optional<Cliente> clienteExistentePorCpf = clienteRepository.findByCpf(cliente.getCpf());
-		
-		if (clienteExistentePorCpf.isPresent())
-			return true;
-		
-		return false;
 	}
 }
