@@ -7,9 +7,8 @@ import lombok.Setter;
 @Setter
 @Getter
 public class ClienteAtualizarInput{
-	@NotBlank
 	private String nome;
-	
+	@NotBlank
 	private String cnpj;
 
 	private String endereco;

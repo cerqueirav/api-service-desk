@@ -20,7 +20,7 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long>{
 	
 	@Transactional(readOnly=true)
 	@Query("SELECT c FROM Cliente c WHERE c.cnpj = :cnpj")
-	Optional<Cliente> findByCnpj(String cnpj);
+	Cliente findByCnpj(String cnpj);
 	
 	@Transactional(readOnly=true)
 	@Query("SELECT c FROM Cliente c WHERE c.endereco = :endereco")

@@ -27,7 +27,7 @@ import com.api.servicedesk.models.output.ClienteResumoModel;
 import com.api.servicedesk.services.ClienteService;
 
 @RestController
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "*")
 @RequestMapping("/clientes")
 public class ClienteController {
 	@Autowired
@@ -61,7 +61,7 @@ public class ClienteController {
 		if (cliente == null)
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro desconhecido!");
 		
-		return ResponseEntity.status(HttpStatus.OK).body(cliente.get());
+		return ResponseEntity.status(HttpStatus.OK).body(cliente);
 	}
 	
 	@PostMapping
@@ -78,11 +78,11 @@ public class ClienteController {
 		var clienteAtual = clienteService.clienteExistentePorCnpj(clienteCnpj);
 		
 		if (clienteAtual == null) 
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro desconhecido");
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Erro desconhecido");
 		
-		var clienteAtualizado =	clienteService.atualizar(clienteAtualizarInput, clienteAtual.get());
+		var clienteAtualizado =	clienteService.atualizar(clienteAtualizarInput, clienteAtual);
 		
-		return ResponseEntity.status(HttpStatus.CREATED).body(clienteService.salvar(clienteAtualizado));
+		return ResponseEntity.status(HttpStatus.OK).body(clienteService.salvar(clienteAtualizado));
 	}
 	
 	@DeleteMapping("/{clienteCnpj}")
@@ -90,9 +90,9 @@ public class ClienteController {
 		var cliente = clienteService.clienteExistentePorCnpj(clienteCnpj);
 		
 		if (cliente == null)
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro desconhecido!"); 
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Erro desconhecido!"); 
 		
-		clienteService.deletar(cliente.get());
+		clienteService.deletar(cliente);
 		
 		return ResponseEntity.status(HttpStatus.OK).body("Cliente excluido com sucesso!");
 	}

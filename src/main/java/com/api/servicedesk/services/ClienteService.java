@@ -37,11 +37,6 @@ public class ClienteService {
 		
 		return clienteRepository.save(clienteAtual);
 	}
-		
-	@Transactional
-	public void deletar(Long clienteId) {
-		clienteRepository.deleteById(clienteId);
-	}
 
 	@Transactional
 	public void deletar(Cliente cliente) {
@@ -51,6 +46,10 @@ public class ClienteService {
 	public List<Cliente> listar() {
 		return clienteRepository.findAll();
 	}
+	
+	public Cliente listarById(String clienteCnpj) {
+		return clienteRepository.findByCnpj(clienteCnpj);
+	}
 
     public Page<ClienteResumoModel> listar(int pagina, int qtd){
 		Pageable pageable = PageRequest.of(pagina, qtd, Sort.Direction.ASC, "nome");
@@ -58,7 +57,6 @@ public class ClienteService {
     }
 	
 	public void preparaClienteParaSalvar(Cliente clienteInput) {
-		clienteInput.setStatus(StatusCliente.Ativo);
 		clienteInput.setDataCadastro(OffsetDateTime.now());
 	}
 	
@@ -74,10 +72,10 @@ public class ClienteService {
 			cliente.setEndereco(clienteAtualizarInput.getEndereco());
 	}
 	
-	public Optional<Cliente> clienteExistentePorCnpj(String clienteCnpj) {
-		Optional<Cliente> clienteExistentePorCpnj = clienteRepository.findByCnpj(clienteCnpj);
+	public Cliente clienteExistentePorCnpj(String clienteCnpj) {
+		var clienteExistentePorCpnj = clienteRepository.findByCnpj(clienteCnpj);
 		
-		if (clienteExistentePorCpnj.isPresent())
+		if (clienteExistentePorCpnj == null)
 			return clienteExistentePorCpnj;
 		
 		return null;

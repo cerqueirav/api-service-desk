@@ -36,7 +36,7 @@ public class SolicitacaoService {
 	public Solicitacao salvar(SolicitacaoNovaInput solicitacaoNovaInput) {
 		var cliente = clienteService.clienteExistentePorCnpj(solicitacaoNovaInput.getClienteCnpj());
 		
-		Solicitacao solicitacao = new Solicitacao(cliente.get(), solicitacaoNovaInput.getComplemento());
+		Solicitacao solicitacao = new Solicitacao(cliente, solicitacaoNovaInput.getComplemento());
 		
 		BeanUtils.copyProperties(solicitacaoNovaInput, solicitacao);
 		

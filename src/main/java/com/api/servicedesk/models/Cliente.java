@@ -30,9 +30,6 @@ public class Cliente{
 	@Column(nullable = false, length = 100)
 	private String endereco;
 	
-	@Enumerated(EnumType.STRING)
-	private StatusCliente status;
-	
 	@CreationTimestamp
 	@Column(name = "data_cadastro", columnDefinition = "TIMESTAMP WITH TIME ZONE")
 	private OffsetDateTime dataCadastro;

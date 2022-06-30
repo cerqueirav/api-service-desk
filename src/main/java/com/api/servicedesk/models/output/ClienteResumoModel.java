@@ -30,7 +30,6 @@ public class ClienteResumoModel {
 		this.nome = cliente.getNome();
 		this.cnpj = cliente.getCnpj();
 		this.endereco = cliente.getEndereco();
-		this.status = cliente.getStatus();
 		this.dataCadastro = cliente.getDataCadastro();
 	}
 
@@ -44,7 +43,6 @@ public class ClienteResumoModel {
 		clienteResumo.setNome(cliente.getNome());
 		clienteResumo.setCnpj(cliente.getCnpj());
 		clienteResumo.setEndereco(cliente.getEndereco());
-		clienteResumo.setStatus(cliente.getStatus());
 		clienteResumo.setDataCadastro(cliente.getDataCadastro());
 		
 		return clienteResumo;
